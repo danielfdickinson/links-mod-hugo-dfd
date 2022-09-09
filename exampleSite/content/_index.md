@@ -8,16 +8,19 @@ tags = [
 ]
 description = """\
 Hugo link render-hook, partials, and shortcode for improved
-link handling, including GitHub compatibility (page-relative links). Completely
-new code; intended to replace link-handling-mod-hugo-dfd.\
+link handling, including GitHub compatibility (page-relative links). New code
+intended to replace link-handling-mod-hugo-dfd.\
 """
-[[cascade]]
 layout = "single"
-[cascade._target]
-path = "/readme/_index.md"
-
 [[cascade]]
 tags = ["docs"]
 [cascade._target]
 path = "/readme/**"
 +++
+
+Hugo link render-hook, partials, and shortcode for improved link handling,
+including GitHub compatibility (page-relative links). Completely new code;
+intended to replace
+<https://github.com/danielfdickinson/link-handling-mod-hugo-dfd>.
+
+See the the documentation under [About](readme/README.md) for more information.

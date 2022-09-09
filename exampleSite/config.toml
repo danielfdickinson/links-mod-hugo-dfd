@@ -8,7 +8,7 @@ summaryLength = 25
 
 [params]
 author = "Daniel F. Dickinson"
-mainSections = ["post","readme"]
+mainSections = ["post"]
 # Footnotes and TableOfContents don't work properly with a base href set in <head>
 useBaseURL = false
 
@@ -23,6 +23,12 @@ description = "Demo/test site for Daniel F. Dickinson's (DFD) Hugo links module"
 weight = 1
 
 [languages.en.menu]
+[[languages.en.menu.main]]
+identifier = "about"
+name = "About"
+url = "/readme/readme/" # We need to use URL because we support Hugo from 0.80.0
+weight = 10
+
 [[languages.en.menu.main]]
 identifier = "accessibility"
 name = "Accessibility"
@@ -86,7 +92,19 @@ target = "archetypes"
 
 [[module.imports.mounts]]
 source = "README.md"
-target = "content/readme/_index.md"
+target = "content/readme/README.md"
+
+[[module.imports.mounts]]
+source = "COPYING.md"
+target = "content/readme/COPYING.md"
+
+[[module.imports.mounts]]
+source = "LICENSE-CODE-AND-CONFIGS"
+target = "content/readme/LICENSE-CODE-AND-CONFIGS"
+
+[[module.imports.mounts]]
+source = "LICENSE-TEXT-MEDIA"
+target = "content/readme/LICENSE-TEXT-MEDIA"
 
 [[module.imports.mounts]]
 source = "docs"

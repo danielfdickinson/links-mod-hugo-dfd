@@ -1,0 +1,37 @@
+{{- $ctx := . -}}
+{{- $destination := .Destination -}}
+{{- $page := .Page -}}
+{{- $plainText := .PlainText -}}
+{{- $text := .Text -}}
+{{- $title := .Title -}}
+{{- $getRemote := false -}}
+{{- $allowStatic := false -}}
+
+{{- if partial "helpers/links/is-external.html" $destination -}}
+	{{- if not $getRemote -}}
+		{{- /* If the link is external and we are not pulling remote resources, just use the link verbatim */}}
+<a href="{{ .Destination | safeURL }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
+	{{- else -}}
+		{{- errorf "Pulling remote resource in link render-hook not yet supported." -}}
+	{{- end -}}
+{{- else -}}
+	{{- /* Determine if the link is a page or some other resource */ -}}
+	{{- $pageResource := $page.GetPage $destination -}}
+	{{- if $pageResource -}}
+		{{- $fragment := partial "helpers/links/get-fragment.html" $destination -}}
+<a href="{{ $pageResource.RelPermalink }}#{{ $fragment }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
+	{{- else if hasPrefix $destination "#" -}}
+<a href="{{ $page.RelPermalink }}{{ $destination }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
+		{{- $pageResource = $page -}}
+	{{- else -}}
+		{{- $linkResource := $page.CurrentSection.Resources.Get $destination -}}
+		{{- if not $linkResource -}}
+			{{- $linkResource = resources.GetMatch $destination -}}
+		{{- end -}}
+		{{- if $linkResource -}}
+<a href="{{ $linkResource.RelPermalink }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
+		{{- else if not $allowStatic -}}
+			{{- errorf "%s is not a page or page resource on page %s's section and config does not allow static resources" $destination $page.TranslationKey $page.CurrentSection.TranslationKey -}}
+		{{- end -}}
+	{{- end -}}
+{{- end -}}
