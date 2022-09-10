@@ -11,7 +11,9 @@
 		{{- $fragment = .Fragment -}}
 	{{- end -}}
 {{- else -}}
-	{{- errorf printf "Unable to parse link destination '%s'" $destination -}}
+	{{- warnf "FAIL: Unable to parse link destination '%s'" $destination -}}
+	{{- $tmpScratch := newScratch -}}
+	{{- $fragment = $tmpScratch.Get "nil-value" -}}
 {{- end -}}
 {{- return $fragment -}}
 {{- /* Remove trailing newlines */ -}}

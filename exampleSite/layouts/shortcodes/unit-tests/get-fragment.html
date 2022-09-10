@@ -1,0 +1,51 @@
+{{- $ctx := . -}}
+{{- $pass := true -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "" -}}
+{{- if eq $fragment "" -}}
+PASS: Check no URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- else -}}
+FAIL: Check no URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "not a/ proper \\ URL?blah&tet?23/test" -}}
+{{- if eq $fragment "" }}
+PASS: Check invalid URL returns empty string ("") fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check invalid URL returns empty string ("") fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "https://example.com/post/" -}}
+{{- if eq $fragment "" }}
+PASS: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "https://example.com/post#test-frag" -}}
+{{- if eq $fragment "" }}
+PASS: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "/post/" -}}
+{{- if eq $fragment "" }}
+PASS: Check valid internal URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check valid internal URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "/post#note-1" -}}
+{{- if eq $fragment "note-1" }}
+PASS: Check valid internal URL with fragment returns fragment ("note-1") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check valid internal URL with fragment returns fragment ("note-1") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "#note-1" -}}
+{{- if eq $fragment "note-1" }}
+PASS: Check valid fragment only (no URL) returns fragment ("note-1") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check valid fragment only (no URL) returns fragment ("note-1") as fragment (got "{{ $fragment }}')
+{{- end -}}
+{{- $fragment := partial "helpers/functions/get-fragment.html" "#" -}}
+{{- if eq $fragment "" }}
+PASS: Check hash only (#) (no URL or fragment) returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- else }}
+FAIL: Check hash only (#) (no URL or fragment) returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- end -}}
+
