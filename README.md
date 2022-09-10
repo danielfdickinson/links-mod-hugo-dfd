@@ -8,7 +8,8 @@ replace <https://github.com/danielfdickinson/link-handling-mod-hugo-dfd>.
 
 ### Status
 
-TBD
+[![pre-commit.ci
+status](https://results.pre-commit.ci/badge/github/danielfdickinson/links-mod-hugo-dfd/main.svg)](https://results.pre-commit.ci/latest/github/danielfdickinson/links-mod-hugo-dfd/main)
 
 ### Demo and/or documentation site or page
 
