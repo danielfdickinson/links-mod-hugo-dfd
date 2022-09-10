@@ -121,7 +121,7 @@ repos:
     alias: ec
     args:
     - -no-color
-    exclude: ^(LICENSE-|package(-lock)?.json$)
+    exclude: ^(LICENSE$|package(-lock)?.json$)
 
 - repo: "https://github.com/streetsidesoftware/cspell-cli"
   rev: v6.8.0
@@ -137,6 +137,6 @@ repos:
     - --show-context
     - --show-suggestions
     - --validate-directives
-    exclude: ^(LICENSE-|tests/config/cspell.json$) # yamllint disable-line
+    exclude: ^(LICENSE$|tests/config/cspell.json$) # yamllint disable-line
 # yamllint enable rule:key-ordering
 ...
