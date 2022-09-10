@@ -1,0 +1,29 @@
+{{- $ctx := . -}}
+{{- $verInRange := true -}}
+{{- $hugoVersion := split hugo.Version "." -}}
+{{- $verMajor := int (index $hugoVersion 0) -}}
+{{- $verMinor := int (index $hugoVersion 1) -}}
+{{- $verPatch := int (index $hugoVersion 2) -}}
+{{- $minMajor := int (.minMajor | default 0) -}}
+{{- $minMinor := int (.minMinor | default $verMinor) -}}
+{{- $minPatch := int (.minPatch | default 0) -}}
+{{- $maxMajor := int (.maxMajor | default $verMajor) -}}
+{{- $maxMinor := int (.maxMinor | default $verMinor) -}}
+{{- $maxPatch := int (.maxPatch | default $verPatch) -}}
+{{- if lt $verMajor $minMajor -}}
+	{{- $verInRange = false -}}
+{{- else if and (eq $verMajor $minMajor) (lt $verMinor $minMinor) -}}
+	{{- $verInRange = false -}}
+{{- else if and (eq $verMajor $minMajor) (eq $verMinor $minMinor) (lt $verPatch $minPatch) -}}
+	{{- $verInRange = false -}}
+{{- end -}}
+{{- if $verInRange -}}
+	{{- if gt $verMajor $maxMajor -}}
+		{{- $verInRange = false -}}
+	{{- else if and (eq $verMajor $maxMajor) (gt $verMinor $maxMinor) -}}
+		{{- $verInRange = false -}}
+	{{- else if and (eq $verMajor $maxMajor) (eq $verMinor $maxMinor) (gt $verPatch $maxPatch) -}}
+		{{- $verInRange = false -}}
+	{{- end -}}
+{{- end -}}
+{{- return $verInRange -}}

@@ -1,0 +1,91 @@
+{{- $ctx := . -}}
+{{- $pass := true -}}
+{{- if not (isset .Page.Site.Params "hugoversion") -}}
+FAIL: Check environment variable HUGO_PARAMS_HUGOVERSION exists
+	{{- $pass = false -}}
+{{- else -}}
+PASS: Check environment variable HUGO_PARAMS_HUGOVERSION exists
+{{- end -}}
+{{- $paramVer := split (index .Page.Site.Params "hugoversion") "." -}}
+{{- if ne (len $paramVer) 3 }}
+FAIL: Check HUGO_PARAMS_HUGOVERSION if of the form 0.0.0 (got {{ index .Page.Site.Params "hugoversion" }})
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check HUGO_PARAMS_HUGOVERSION is of the form 0.0.0 (got {{ index .Page.Site.Params "hugoversion" }})
+{{- end -}}
+{{- $paramMajor := int (index $paramVer 0) -}}
+{{- $paramMinor := int (index $paramVer 1) -}}
+{{- $paramPatch := int (index $paramVer 2) }}
+{{- if and (eq $paramMajor 0) (eq $paramMinor 0) (eq $paramPatch 0) }}
+FAIL: Check HUGO_PARAMS_HUGOVERSION exists with (major, minor, patch) (got {{ $paramMajor }}, {{ $paramMinor }}, {{ $paramPatch }})
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check HUGO_PARAMS_HUGOVERSION exists with (major, minor, patch) (got {{ $paramMajor }}, {{ $paramMinor }}, {{ $paramPatch }})
+{{- end -}}
+
+{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "maxMajor" $paramMajor "minMinor" $paramMinor "maxMinor" $paramMinor "minPatch" $paramPatch "maxPatch" $paramPatch)) }}
+FAIL: Check HUGO_PARAMS_HUGOVERSION = hugo.Version (got {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≠ {{ hugo.Version }})
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check HUGO_PARAMS_HUGOVERSION = hugo.Version (got {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} = {{ hugo.Version }})
+{{- end -}}
+
+{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" $paramMinor "minPatch" (sub $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
+{{- end -}}
+
+{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" (sub $paramMinor 1) "minPatch" (add $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
+{{- end -}}
+
+{{- if (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" $paramMinor "minPatch" (add $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
+{{- end -}}
+
+{{- if (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" (add $paramMinor 1) "minPatch" (sub $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
+{{- end -}}
+
+{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" $paramMinor "maxPatch" (add $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
+{{- end -}}
+
+{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" (add $paramMinor 1) "maxPatch" (sub $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
+{{- end -}}
+
+{{- if (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" $paramMinor "maxPatch" (sub $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
+{{- end -}}
+
+{{- if (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" (sub $paramMinor 1) "maxPatch" (add $paramPatch 1))) }}
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
+	{{- $pass = false -}}
+{{- else }}
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
+{{- end -}}
+
+{{- if not $pass -}}
+	{{- warnf "FAIL: UNIT TESTS: Checking check-hugo-version failed" -}}
+{{- end -}}

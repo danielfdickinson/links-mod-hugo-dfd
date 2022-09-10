@@ -41,6 +41,10 @@ tag = "tags"
 [frontmatter]
 lastmod = [":git", "lastmod", ":fileModTime", "date", "publishDate"]
 
+[outputFormats]
+[outputFormats.TEXT]
+mediaType = "text/plain"
+
 [markup]
 [markup.highlight]
 guessSyntax = true
