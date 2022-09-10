@@ -36,6 +36,6 @@ TBD
 
 ## Colophon
 
-* [Copyright and licensing](COPYING.md)
+* [Copyright and licensing](LICENSE)
 * [Inspirations, information, and source material](docs/ACKNOWLEDGEMENTS.md)
 * [Notes](docs/README-NOTES.md)

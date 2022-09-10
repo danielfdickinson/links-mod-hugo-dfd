@@ -99,16 +99,8 @@ source = "README.md"
 target = "content/readme/README.md"
 
 [[module.imports.mounts]]
-source = "COPYING.md"
-target = "content/readme/COPYING.md"
-
-[[module.imports.mounts]]
-source = "LICENSE-CODE-AND-CONFIGS"
-target = "content/readme/LICENSE-CODE-AND-CONFIGS"
-
-[[module.imports.mounts]]
-source = "LICENSE-TEXT-MEDIA"
-target = "content/readme/LICENSE-TEXT-MEDIA"
+source = "LICENSE"
+target = "content/readme/LICENSE"
 
 [[module.imports.mounts]]
 source = "docs"
