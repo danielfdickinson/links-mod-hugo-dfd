@@ -10,4 +10,4 @@ tags = ["unit-tests"]
 {{< unit-tests/get-fragment >}}
 ```
 
-[Unit test results as a text file](unit-tests-get-fragment-plain.txt)
+[Unit test results as a text file](plaintext/unit-tests-get-fragment.txt)
