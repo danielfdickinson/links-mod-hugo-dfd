@@ -32,59 +32,59 @@ PASS: Check site.Params.hugoversion = hugo.Version (got {{ $paramMajor }}.{{ $pa
 	{{- end -}}
 
 	{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" $paramMinor "minPatch" (sub $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &ge;{{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &ge; {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} minimum
 	{{- end -}}
 
 	{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" (sub $paramMinor 1) "minPatch" (add $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &ge; {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≥ {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &ge; {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} minimum
 	{{- end -}}
 
 	{{- if (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" $paramMinor "minPatch" (add $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &lt; {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &lt; {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} minimum
 	{{- end -}}
 
 	{{- if (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" (add $paramMinor 1) "minPatch" (sub $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &lt; {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} < {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &lt; {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} minimum
 	{{- end -}}
 
 	{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" $paramMinor "maxPatch" (add $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &le; {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &le; {{ $paramMajor }}.{{ $paramMinor }}.{{ add $paramPatch 1 }} maximum
 	{{- end -}}
 
 	{{- if not (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" (add $paramMinor 1) "maxPatch" (sub $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &le; {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} ≤ {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &le; {{ $paramMajor }}.{{ add $paramMinor 1 }}.{{ sub $paramPatch 1 }} maximum
 	{{- end -}}
 
 	{{- if (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" $paramMinor "maxPatch" (sub $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &gt; {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &gt; {{ $paramMajor }}.{{ $paramMinor }}.{{ sub $paramPatch 1 }} maximum
 	{{- end -}}
 
 	{{- if (partial "helpers/functions/check-hugo-version.html" (dict "maxMajor" $paramMajor "maxMinor" (sub $paramMinor 1) "maxPatch" (add $paramPatch 1))) }}
-FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
+FAIL: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &gt; {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
 		{{- $pass = false -}}
 	{{- else }}
-PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} > {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
+PASS: Check {{ $paramMajor }}.{{ $paramMinor }}.{{ $paramPatch }} &gt; {{ $paramMajor }}.{{ sub $paramMinor 1 }}.{{ add $paramPatch 1 }} maximum
 	{{- end -}}
 {{- end -}}
 

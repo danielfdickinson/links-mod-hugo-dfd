@@ -83,6 +83,7 @@
 	],
 	"root": true,
 	"rules": {
+		"no-trailing-whitespace": "off",
 		"require-sri": "off",
 		"valid-id": [
 			"error",
