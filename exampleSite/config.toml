@@ -48,7 +48,7 @@ mediaType = "text/plain"
 [markup]
 [markup.highlight]
 guessSyntax = true
-noClasses = true
+noClasses = false
 
 [privacy]
 
