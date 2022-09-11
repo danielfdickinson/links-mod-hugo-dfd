@@ -19,7 +19,7 @@
 	{{- $pageResource := $page.GetPage $destination -}}
 	{{- if $pageResource -}}
 		{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" $destination) -}}
-<a href="{{ $pageResource.RelPermalink }}#{{ $fragment }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
+<a href="{{ $pageResource.RelPermalink }}{{ cond (ne $fragment "") "#" "" }}{{ $fragment }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
 	{{- else if hasPrefix $destination "#" -}}
 <a href="{{ $page.RelPermalink }}{{ $destination }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
 		{{- $pageResource = $page -}}
