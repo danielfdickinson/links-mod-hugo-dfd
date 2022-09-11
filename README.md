@@ -1,7 +1,7 @@
 # DFD Hugo links module
 
 Hugo link render-hook, partials, and shortcode for improved link handling,
-including GitHub compatibility (page-relative links). New code intended to
+including GitHub compatibility (page-relative links). New code, intended to
 replace <https://github.com/danielfdickinson/link-handling-mod-hugo-dfd>.
 
 ## Metadata
@@ -26,6 +26,12 @@ TBD
 ## Using this module
 
 TBD
+
+## Supporting functions
+
+* [Documentation of supporting functions](docs/code-supporting_functions.md)
+* [Documentation of unit tests for supporting
+functions](docs/unit-tests-supporting_functions.md)
 
 ## Getting help, discussing, and/or modifying
 
