@@ -13,9 +13,17 @@ intended to replace link-handling-mod-hugo-dfd.\
 """
 layout = "single"
 [[cascade]]
+pageCanonical = true
+tags = ["docs"]
+[cascade._target]
+path = "/readme/README.md"
+kind = "page"
+[[cascade]]
+pageCanonical = false
 tags = ["docs"]
 [cascade._target]
 path = "/readme/**"
+kind = "page"
 +++
 
 Hugo link render-hook, partials, and shortcode for improved link handling,
