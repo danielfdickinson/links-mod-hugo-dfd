@@ -5,3 +5,4 @@ dontbreakthebackbutton
 edconf
 hugoversion
 isset
+mtimes

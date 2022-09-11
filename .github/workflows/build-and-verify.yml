@@ -91,7 +91,7 @@ jobs:
         IdentityFile ~/.ssh/rsync_bastion_key" >>~/.ssh/config
         eval $(ssh-agent)
         ssh-add -t 900s ~/.ssh/rsync_remote_key
-        rsync -rcltx --delete -e "ssh -qi ~/.ssh/rsync_bastion_key -p ${RSYNC_BASTION_PORT} -o 'ForwardAgent yes' ${RSYNC_BASTION_USER_HOST} 'ssh -ql ${RSYNC_REMOTE_USER}'" public/ ${RSYNC_REMOTE_USER}@${RSYNC_REMOTE_HOST_MODULE}/ # cspell:disable-line
+        rsync -rcltxO --delete -e "ssh -qi ~/.ssh/rsync_bastion_key -p ${RSYNC_BASTION_PORT} -o 'ForwardAgent yes' ${RSYNC_BASTION_USER_HOST} 'ssh -ql ${RSYNC_REMOTE_USER}'" public/ ${RSYNC_REMOTE_USER}@${RSYNC_REMOTE_HOST_MODULE}/ # cspell:disable-line
         ssh-add -D
         shred -u ~/.ssh/rsync_*_key
       # yamllint enable rule:line-length
