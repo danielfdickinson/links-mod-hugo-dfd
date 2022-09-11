@@ -1,5 +1,6 @@
 HUGOVERSION
 administrivia
+deploytest
 dontbreakthebackbutton
 edconf
 hugoversion
