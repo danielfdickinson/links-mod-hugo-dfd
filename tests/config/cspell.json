@@ -56,5 +56,16 @@
 		"./tests/config/dfd-wordlists/**"
 	],
 	"ignoreWords": [],
+	"overrides": [
+		{
+			"dictionaries": [
+				"css",
+				"html"
+			],
+			"filename": [
+				"./tests/config-action/htmlvalidate*.json"
+			]
+		}
+	],
 	"version": "0.2"
 }
