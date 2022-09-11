@@ -1,0 +1,6 @@
+[params]
+author = "Daniel F. Dickinson"
+mainSections = ["post"]
+# Footnotes and TableOfContents don't work properly with a base href set in <head>
+useBaseURL = false
+hugoversion = "0.88.1"

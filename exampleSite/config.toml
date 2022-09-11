@@ -6,12 +6,6 @@ enableGitInfo = true
 enableRobotsTXT = true
 summaryLength = 25
 
-[params]
-author = "Daniel F. Dickinson"
-mainSections = ["post"]
-# Footnotes and TableOfContents don't work properly with a base href set in <head>
-useBaseURL = false
-
 # See https://gohugo.io/content-management/multilingual/
 # and https://www.regisphilibert.com/blog/2018/08/hugo-multilingual-part-1-managing-content-translation/
 [languages]
