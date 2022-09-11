@@ -18,13 +18,18 @@
 	{{- /* Determine if the link is a page or some other resource */ -}}
 	{{- $pageResource := $page.GetPage $destination -}}
 	{{- if $pageResource -}}
-		{{- $fragment := partial "helpers/functions/get-fragment.html" $destination -}}
+		{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" $destination) -}}
 <a href="{{ $pageResource.RelPermalink }}#{{ $fragment }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
 	{{- else if hasPrefix $destination "#" -}}
 <a href="{{ $page.RelPermalink }}{{ $destination }}"{{ with .Title}} title="{{ . }}"{{ end }}>{{ .Text | safeHTML }}</a>
 		{{- $pageResource = $page -}}
 	{{- else -}}
-		{{- $linkResource := $page.CurrentSection.Resources.Get $destination -}}
+		{{- $linkResource := $page.Scratch.Get "nil-value" -}}
+		{{- if partial "helpers/functions/check-hugo-version.html" (dict "minMinor" 97 "minPatch" 0) -}}
+			{{- $linkResource = $page.CurrentSection.Resources.Get $destination -}}
+		{{- else -}}
+			{{- $linkResource = $page.CurrentSection.Resources.GetMatch $destination -}}
+		{{- end -}}
 		{{- if not $linkResource -}}
 			{{- $linkResource = resources.GetMatch $destination -}}
 		{{- end -}}
