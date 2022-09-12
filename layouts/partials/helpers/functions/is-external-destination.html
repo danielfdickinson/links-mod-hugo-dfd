@@ -1,15 +1,21 @@
-{{- $destination := . -}}
+{{- $ctx := . -}}
+{{- $destination := .Destination -}}
 {{- $path := "" -}}
 {{- $fragment := "" -}}
 {{- $external := false -}}}
 {{- $inUrl := urls.Parse $destination -}}
 {{- with $inUrl -}}
-	{{- /* We treat absolute URLs (that include http/https/mailto/etc and/or host) as external */ -}}
-	{{- if or .Host .Scheme -}}
+	{{- /* We treat absolute URLs (that include http/https/mailto/etc and host) as external */ -}}
+	{{- if or (and .Scheme .Host) (and .Scheme .Opaque) .Host -}}
+		{{- if and (and .Scheme .Opaque) (hasPrefix .Scheme "http") -}}
+			{{- errorf "FAIL: %s is http(s) but missing '//'" $destination -}}
+		{{- end -}}
 		{{- $external = true -}}
+	{{- else if and (not (and .Scheme .Host)) (not (and .Scheme .Opaque)) (not .Host) .Scheme -}}
+		{{- errorf "FAIL: %s is a URL scheme only (no target)" $destination -}}
 	{{- end -}}
 {{- else -}}
-	{{- errorf printf "Unable to parse link destination '%s'" $destination -}}
+	{{- errorf printf "FAIL: Unable to parse link destination '%s'" $destination -}}
 {{- end -}}
 {{- return $external -}}
 {{- /* Remove trailing newlines */ -}}

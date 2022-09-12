@@ -1,5 +1,5 @@
 +++
-title = "Unit tests: check Hugo version"
+title = "Unit tests: check-hugo-version"
 date = "2022-09-10T03:24:40Z"
 publishDate = "2022-09-10T03:24:40Z"
 author = "Daniel F. Dickinson"
