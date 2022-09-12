@@ -1,0 +1,79 @@
+{{- $ctx := . -}}
+{{- $destination := .Destination -}}
+{{- $page := .Page -}}
+{{- $getRemote := .getRemote -}}
+{{- $absLink := .absLink -}}
+{{- $remoteFallback := .remoteFallback -}}
+{{- $staticFallback := .staticFallback -}}
+{{- $finalDestination := $page.Scratch.Get "nil-value" -}}
+{{- $finalResource := $page.Scratch.Get "nil-value" -}}
+{{- $isPage := false -}}
+
+{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" $destination) -}}
+	{{- if not $getRemote -}}
+		{{- /* If the link is external and we are not pulling remote resources, just use the link verbatim */}}
+		{{- $finalDestination = $destination -}}
+	{{- else -}}
+		{{- if partial "helpers/functions/check-hugo-version.html" (dict "minMinor" 91) -}}
+			{{- $linkResource := resources.GetRemote $destination -}}
+			{{- if $linkResource -}}
+				{{- if $linkResource.Err -}}
+					{{- if $remoteFallback -}}
+						{{- warnf "%s getting %s; falling back to non-resource link" .Err $destination -}}
+							{{- $finalDestination = $destination -}}
+					{{- else -}}
+						{{- errorf "%s getting %s" .Err $destination -}}
+					{{- end -}}
+				{{- else -}}
+					{{- $finalResource = $linkResource -}}
+					{{- $finalDestination = $linkResource.Permalink -}}
+				{{- end -}}
+			{{- else -}}
+			{{- end -}}
+		{{- else if $remoteFallback -}}
+			{{- warnf "Falling back to non-resource link for remote '%s' due to Hugo < 0.91.0 (page %s)" $destination $page.TranslationKey -}}
+			{{- $finalDestination = $destination -}}
+		{{- else -}}
+			{{- errorf "Pulling remote resource '%d' on page '%s' in this link render-hook not supported with Hugo < 0.91.0 and remoteFallback = false." $destination $page.TranslationKey -}}
+		{{- end -}}
+	{{- end -}}
+{{- else -}}
+	{{- /* Determine if the link is for a page or some other resource */ -}}
+	{{- $pageResource := $page.GetPage $destination -}}
+	{{- if $pageResource -}}
+		{{- $finalResource = $pageResource -}}
+		{{- $isPage = true -}}
+		{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" $destination) -}}
+		{{- if $fragment -}}
+			{{- $finalDestination = printf "%s#%s" $pageResource.RelPermalink $fragment -}}
+		{{- else -}}
+			{{- $finalDestination = $pageResource.RelPermalink -}}
+		{{- end -}}
+	{{- else if hasPrefix $destination "#" -}}
+		{{- $finalResource = $page -}}
+		{{- $finalDestination = printf "%s%s" $page.RelPermalink $destination -}}
+	{{- else -}}
+		{{- $linkResource := $page.Scratch.Get "nil-value" -}}
+		{{- if partial "helpers/functions/check-hugo-version.html" (dict "minMinor" 97) -}}
+			{{- $linkResource = $page.CurrentSection.Resources.Get $destination -}}
+		{{- else -}}
+			{{- $linkResource = $page.CurrentSection.Resources.GetMatch $destination -}}
+		{{- end -}}
+		{{- if not $linkResource -}}
+			{{- $linkResource = resources.GetMatch $destination -}}
+		{{- end -}}
+		{{- if $linkResource -}}
+			{{- $finalDestination = $linkResource.RelPermalink -}}
+			{{- $finalResource = $linkResource -}}
+		{{- else if $staticFallback -}}
+			{{- $finalDestination = $destination -}}
+			{{- warnf "%s is not a page or page resource in page %s's section, using fallback to static link" $destination $page.TranslationKey -}}
+		{{- else -}}
+			{{- errorf "%s is not a page or page resource in page %s's section and static link fallback is not enabled" $destination $page.TranslationKey -}}
+		{{- end -}}
+	{{- end -}}
+{{- end -}}
+{{- if and $finalDestination $absLink -}}
+	{{- $finalDestination = $finalDestination | absURL -}}
+{{- end -}}
+{{- return (dict "Destination" $finalDestination "Resource" $finalResource "IsPage" $isPage) -}}
