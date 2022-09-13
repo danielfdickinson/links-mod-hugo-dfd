@@ -14,7 +14,7 @@
 		{{- /* If the link is external and we are not pulling remote resources, just use the link verbatim */}}
 		{{- $finalDestination = $destination -}}
 	{{- else -}}
-		{{- if partial "helpers/functions/check-hugo-version.html" (dict "minMinor" 91) -}}
+		{{- if ge hugo.Version "0.91.0" -}}
 			{{- $linkResource := resources.GetRemote $destination -}}
 			{{- if $linkResource -}}
 				{{- if $linkResource.Err -}}
@@ -54,7 +54,7 @@
 		{{- $finalDestination = printf "%s%s" $page.RelPermalink $destination -}}
 	{{- else -}}
 		{{- $linkResource := $page.Scratch.Get "nil-value" -}}
-		{{- if partial "helpers/functions/check-hugo-version.html" (dict "minMinor" 97) -}}
+		{{- if ge hugo.Version "0.97.0" -}}
 			{{- $linkResource = $page.CurrentSection.Resources.Get $destination -}}
 		{{- else -}}
 			{{- $linkResource = $page.CurrentSection.Resources.GetMatch $destination -}}
