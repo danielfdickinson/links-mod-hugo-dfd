@@ -1,15 +1,17 @@
 {{- $ctx := . -}}
 {{- $verInRange := true -}}
+{{- $tmpScratch := newScratch -}}
+{{- $nilValue := $tmpScratch.Get "nil-value" -}}
 {{- $hugoVersion := split hugo.Version "." -}}
 {{- $verMajor := int (index $hugoVersion 0) -}}
 {{- $verMinor := int (index $hugoVersion 1) -}}
 {{- $verPatch := int (index $hugoVersion 2) -}}
-{{- $minMajor := int (.minMajor | default 0) -}}
-{{- $minMinor := int (.minMinor | default $verMinor) -}}
-{{- $minPatch := int (.minPatch | default 0) -}}
-{{- $maxMajor := int (.maxMajor | default $verMajor) -}}
-{{- $maxMinor := int (.maxMinor | default $verMinor) -}}
-{{- $maxPatch := int (.maxPatch | default $verPatch) -}}
+{{- $minMajor := int (.minMajor | default (cond (or (eq .minMajor $nilValue) (eq .minMajor "")) $verMajor 0)) -}}
+{{- $minMinor := int (.minMinor | default (cond (or (eq .minMinor $nilValue) (eq .minMinor "")) $verMinor 0)) -}}
+{{- $minPatch := int (.minPatch | default (cond (or (eq .minPatch $nilValue) (eq .minPatch "")) $verPatch 0)) -}}
+{{- $maxMajor := int (.maxMajor | default (cond (or (eq .maxMajor $nilValue) (eq .maxMajor "")) $verMajor 0)) -}}
+{{- $maxMinor := int (.maxMinor | default (cond (or (eq .maxMinor $nilValue) (eq .maxMinor "")) $verMinor 0)) -}}
+{{- $maxPatch := int (.maxPatch | default (cond (or (eq .maxPatch $nilValue) (eq .maxPatch "")) $verPatch 0)) -}}
 {{- if lt $verMajor $minMajor -}}
 	{{- $verInRange = false -}}
 {{- else if and (eq $verMajor $minMajor) (lt $verMinor $minMinor) -}}
