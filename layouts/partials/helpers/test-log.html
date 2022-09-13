@@ -70,4 +70,10 @@
 {{- if ne $noPrint true -}}
 	{{- $output = (printf "%s: Check %s (got '%s', expected %s)" $passString $checkMessage $actual $expected) -}}
 {{- end -}}
-{{- return (dict "pass" $pass "output" $output) -}}
+
+{{- if not (or $skip $pass) -}}
+	{{- $skip = true -}}
+	{{- $pass = false -}}
+{{- end -}}
+
+{{- return (dict "pass" $pass "skip" $skip "output" $output) -}}
