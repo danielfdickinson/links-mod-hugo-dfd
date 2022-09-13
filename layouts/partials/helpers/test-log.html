@@ -60,9 +60,14 @@
 	{{- $expected = apply $expected "string" "." -}}
 {{- end -}}
 {{- if ne $noLog true -}}
-	{{- warnf "%s: Check %s (got %s, expected %s)" $passString $checkMessage $actual $expected -}}
+	{{- if eq $matchType "regexMatch" -}}
+		{{- $expected = printf "regex '%s'" $expected -}}
+	{{- else -}}
+		{{- $expected = printf "'%s'" $expected -}}
+	{{- end -}}
+	{{- warnf "%s: Check %s (got '%s', expected %s)" $passString $checkMessage $actual $expected -}}
 {{- end -}}
 {{- if ne $noPrint true -}}
-	{{- $output = (printf "%s: Check %s (got %s, expected %s)" $passString $checkMessage $actual $expected) -}}
+	{{- $output = (printf "%s: Check %s (got '%s', expected %s)" $passString $checkMessage $actual $expected) -}}
 {{- end -}}
 {{- return (dict "pass" $pass "output" $output) -}}
