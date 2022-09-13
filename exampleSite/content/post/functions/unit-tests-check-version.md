@@ -11,4 +11,4 @@ description = "Test Hugo version check function"
 {{< unit-tests/check-hugo-version true >}}
 ```
 
-[Unit test results as a text file](plaintext/unit-tests-check-version.txt)
+[Unit test results as a text file](plaintext/unit-tests-check-version.md)

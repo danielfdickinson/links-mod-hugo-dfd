@@ -10,7 +10,7 @@ Unit test output for `is-external-destination`.\
 +++
 
 ```shell-session
-{{< unit-tests/is-external-destination >}}
+{{< unit-tests/is-external-destination true >}}
 ```
 
-[Unit test results as a text file](plaintext/unit-tests-is-external-destination.txt)
+[Unit test results as a text file](plaintext/unit-tests-is-external-destination.md)

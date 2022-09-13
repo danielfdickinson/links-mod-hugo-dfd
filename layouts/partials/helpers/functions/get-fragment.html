@@ -2,12 +2,12 @@
 {{- $destination := .destination -}}
 {{- $skip := .skip -}}
 {{- $log := .log -}}
+{{- $logOnError := .logOnError -}}
 {{- $noPrint := .noPrint -}}
 {{- $path := "" -}}
 {{- $fragment := "" -}}
-{{- $external := false -}}}
 {{- $inUrl := urls.Parse $destination -}}
-{{- $result := partial "helpers/test-log.html" (dict "matchType" "regexMatch" "actual" $inUrl "expected" "(^$|(\\s|\\S)+)" "checkMessage" (printf "parse link destination for '%s'" $destination) "matchPass" true "skip" $skip "noLog" (not $log) "noPrint" ($noPrint)) -}}
+{{- $result := partial "helpers/test-log.html" (dict "matchType" "regexMatch" "actual" $inUrl "expected" "(^$|(\\s|\\S)+)" "checkMessage" (printf "parse link destination for '%s'" $destination) "matchPass" true "skip" $skip "noLog" (not $log) "noPrint" $noPrint "logOnError" $logOnError) -}}
 {{- with $inUrl -}}
 	{{- if .Fragment -}}
 		{{- $fragment = .Fragment -}}

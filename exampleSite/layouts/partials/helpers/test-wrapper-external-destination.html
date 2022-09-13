@@ -1,0 +1,32 @@
+{{- $ctx := . -}}
+{{- $destination := .Destination -}}
+{{- $expected := .expected -}}
+{{- $matchType := .matchType -}}
+{{- $checkMessage := .checkMessage -}}
+{{- $skip := .skip -}}
+{{- $noLog := .noLog -}}
+{{- $noPrint := .noPrint -}}
+{{- $ignoreResult := .ignoreResult -}}
+{{- $pass := true -}}
+{{- $output := slice -}}
+
+{{- $externalMap := partial "helpers/functions/is-external-destination.html" (dict "Destination" $destination "skip" $skip "logOnError" true "noFailError" true) -}}
+{{- $external := $externalMap.isExternal -}}
+{{- $externalResult := $externalMap.result -}}
+{{- /* Ignore invalid URLs for PASS/FAIL */ -}}
+{{- $pass = (not (eq $externalResult.pass false)) -}}
+{{- if $externalMap.invalid -}}
+	{{- if ne $noPrint true -}}
+		{{- $output = $output | append $externalResult.output -}}
+	{{- end -}}
+{{- end -}}
+
+{{- $result := partial "helpers/test-log.html" (dict "matchType" $matchType "actual" (string $external) "expected" (string $expected) "checkMessage" (printf "%s (destination: '%s')" $checkMessage $destination) "matchPass" true "skip" $skip "noLog" $ignoreResult "noPrint" $ignoreResult) -}}
+{{- if not $ignoreResult -}}
+	{{- $output = $output | append $result.output -}}
+	{{- $pass = $result.pass -}}
+	{{- $skip = $result.skip -}}
+{{- else -}}
+	{{- $skip = $externalResult.skip -}}
+{{- end -}}
+{{- return (dict "pass" $pass "skip" $skip "output" (delimit $output "\n")) -}}

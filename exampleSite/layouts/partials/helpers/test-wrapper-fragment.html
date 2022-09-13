@@ -7,18 +7,21 @@
 {{- $noLog := .noLog -}}
 {{- $noPrint := .noPrint -}}
 {{- $pass := true -}}
+{{- $tmpScratch := newScratch -}}
+{{- $output := slice -}}
 
-{{- $fragmentMap := partial "helpers/functions/get-fragment.html" (dict "destination" $destination "skip" $skip) -}}
+{{- $fragmentMap := partial "helpers/functions/get-fragment.html" (dict "destination" $destination "skip" $skip "logOnError" true) -}}
 {{- $fragment := $fragmentMap.fragment -}}
 {{- $fragmentResult := $fragmentMap.result -}}
-{{- if not $fragmentResult.pass -}}
+{{- if not $fragmentResult.pass }}
 	{{- $skip = true -}}
 	{{- $pass = false -}}
-	{{- if ne $noPrint true -}}
-		{{- printf "%s" $fragmentResult.output -}}
+	{{- if ne $noPrint true }}
+		{{ $output = $output | append $fragmentResult.output -}}
 	{{- end -}}
 {{- end -}}
 
 {{- $result := partial "helpers/test-log.html" (dict "matchType" $matchType "actual" $fragment "expected" $expected "checkMessage" (printf "%s (destination: '%s')" $checkMessage $destination) "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) -}}
+{{- $output = $output | append $result.output -}}
 
-{{- return $result -}}
+{{- return (dict "pass" $result.pass "skip" $result.skip "output" (delimit $output "\n")) -}}

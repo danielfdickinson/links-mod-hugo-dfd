@@ -3,10 +3,11 @@
 {{- $actual := .actual -}}
 {{- $expected := .expected -}}
 {{- $checkMessage := .checkMessage -}}
-{{- $matchPass := .matchPass -}} {{- /* actual matches expected is PASS */ -}}
 {{- $skip := .skip -}}
 {{- $noLog := .noLog -}}
 {{- $noPrint := .noPrint -}}
+{{- $logOnError := .logOnError -}}
+{{- $noFailError := .noFailError -}}
 {{- $scratch := newScratch -}}
 {{- $pass := $scratch.Get "nil-value" -}}
 {{- $passString := "SKIP" -}}
@@ -35,22 +36,12 @@
 	{{- if eq $matchType "sliceEq" -}}
 		{{- $match = eq (apply $actual "string" ".") (apply $expected "string" ".") -}}
 	{{- end -}}
-	{{- if eq $match true -}}
-		{{- if eq $matchPass true -}}
-			{{- $pass = true -}}
-			{{- $passString = "PASS" -}}
-		{{- else -}}
-			{{- $pass = false -}}
-			{{- $passString = "FAIL" -}}
-		{{- end -}}
+	{{- if or (eq $match true) $noFailError -}}
+		{{- $pass = true -}}
+		{{- $passString = "PASS" -}}
 	{{- else -}}
-		{{- if eq $matchPass true -}}
-			{{- $pass = false -}}
-			{{- $passString = "FAIL" -}}
-		{{- else -}}
-			{{- $pass = true -}}
-			{{- $passString = "PASS" -}}
-		{{- end -}}
+		{{- $pass = false -}}
+		{{- $passString = "FAIL" -}}
 	{{- end -}}
 {{- end -}}
 {{- if reflect.IsSlice $actual -}}
@@ -59,19 +50,22 @@
 {{- if reflect.IsSlice $expected -}}
 	{{- $expected = apply $expected "string" "." -}}
 {{- end -}}
-{{- if ne $noLog true -}}
-	{{- if eq $matchType "regexMatch" -}}
-		{{- $expected = printf "regex '%s'" $expected -}}
-	{{- else -}}
-		{{- $expected = printf "'%s'" $expected -}}
-	{{- end -}}
-	{{- warnf "%s: Check %s (got '%s', expected %s)" $passString $checkMessage $actual $expected -}}
-{{- end -}}
-{{- if ne $noPrint true -}}
-	{{- $output = (printf "%s: Check %s (got '%s', expected %s)" $passString $checkMessage $actual $expected) -}}
+
+{{- if eq $matchType "regexMatch" -}}
+	{{- $expected = printf "regex '%s'" $expected -}}
+{{- else -}}
+	{{- $expected = printf "'%s'" $expected -}}
 {{- end -}}
 
-{{- if not (or $skip $pass) -}}
+
+{{- if or (ne $noLog true) (and (not $match) $logOnError) -}}
+	{{- warnf "%s: Check %s%s (got '%s', expected %s)" $passString $checkMessage (cond (eq $noFailError true) " WOULD FAIL" "") $actual $expected -}}
+{{- end -}}
+{{- if or (ne $noPrint true) (and (not $match) $logOnError) -}}
+	{{- $output = printf "%s: Check %s%s (got '%s', expected %s)" $passString $checkMessage (cond (and (eq $noFailError true) (not $match)) " WOULD FAIL" "") $actual $expected -}}
+{{- end -}}
+
+{{- if or $skip (not $pass) -}}
 	{{- $skip = true -}}
 	{{- $pass = false -}}
 {{- end -}}

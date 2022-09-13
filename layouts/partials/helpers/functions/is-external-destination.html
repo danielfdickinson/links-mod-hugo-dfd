@@ -1,21 +1,33 @@
 {{- $ctx := . -}}
 {{- $destination := .Destination -}}
+{{- $skip := .skip -}}
+{{- $log := .log -}}
+{{- $print := .print -}}
+{{- $logOnError := .logOnError -}}
+{{- $noFailError := .noFailError -}}
 {{- $path := "" -}}
 {{- $fragment := "" -}}
 {{- $external := false -}}}
 {{- $inUrl := urls.Parse $destination -}}
+{{- $invalid := false -}}
+{{- $tmpScratch := newScratch -}}
+{{- $checkMessage := (printf "parse possibly external destination '%s' (additional information: '%s')" $destination "") -}}
 {{- with $inUrl -}}
-	{{- /* We treat absolute URLs (that include http/https/mailto/etc and host) as external */ -}}
+	{{- /* We treat absolute URLs (that include http/https and host or mailto/etc and opaque target) */ -}}
+	{{- /* as external as well as links beginning with ('//') */ -}}
 	{{- if or (and .Scheme .Host) (and .Scheme .Opaque) .Host -}}
-		{{- if and (and .Scheme .Opaque) (hasPrefix .Scheme "http") -}}
-			{{- errorf "FAIL: %s is http(s) but missing '//'" $destination -}}
-		{{- end -}}
 		{{- $external = true -}}
 	{{- else if and (not (and .Scheme .Host)) (not (and .Scheme .Opaque)) (not .Host) .Scheme -}}
-		{{- errorf "FAIL: %s is a URL scheme only (no target)" $destination -}}
+		{{- $invalid = true -}}
+		{{- $checkMessage = (printf "parse possibly external destination '%s' (additional information: '%s')" $destination "is a URL scheme only (no target)") -}}
+		{{- $external = true -}}
 	{{- end -}}
 {{- else -}}
-	{{- errorf printf "FAIL: Unable to parse link destination '%s'" $destination -}}
+	{{- $invalid = true -}}
 {{- end -}}
-{{- return $external -}}
+{{- $result := partial "helpers/test-log.html" (dict "matchType" "eq" "actual" (string (not $invalid)) "expected" "true" "checkMessage" $checkMessage "skip" $skip "noLog" (not $log) "noPrint" (not $print) "logOnError" true "noFailError" $noFailError) -}}
+{{- if $invalid -}}
+	{{- $result = (dict "pass" ($tmpScratch.Get "nil-value") "output" $result.output) -}}
+{{- end -}}
+{{- return (dict "isExternal" $external "result" $result "invalid" $invalid) -}}
 {{- /* Remove trailing newlines */ -}}

@@ -1,67 +1,75 @@
 {{- $ctx := . -}}
-{{- $pass := true -}}
 {{- $page := .Page -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "") -}}
-FAIL: Check empty string ("") is not external (is false), (got true)
-{{- else -}}
-PASS: Check empty string ("") is not external (is false), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" " ") }}
-FAIL: Check space (" ") is not external (is false), (got true)
-{{- else }}
-PASS: Check space (" ") is not external (is false), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "a-string") }}
-FAIL: Check basic string ("a-string") is not external (is false), (got true)
-{{- else }}
-PASS: Check basic string ("a-string") is not external (is false), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "a-string.tld") }}
-FAIL: Check basic string with dot ("a-string.tld") is not external (is false), (got true)
-{{- else }}
-PASS: Check basic string with dot ("a-string.tld") is not external (is false), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "//a-string") }}
-PASS: Check basic string started with two slashes ("//a-string") is external (is true), (got true)
-{{- else }}
-FAIL: Check basic string started with two slashes ("//a-string") is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "user@example.net") }}
-FAIL: Check bare email address (user@example.net) is not external (is false), (got true)
-{{- else }}
-PASS: Check bare email address (user@example.net) is not external (is false), (got false)
-{{- end -}}{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "//a-string.tld") }}
-PASS: Check basic string with dot and started with two slashes ("//a-string.tld") is external (is true), (got true)
-{{- else }}
-FAIL: Check basic string with dot started with two slashes ("//a-string.tld") is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "https://example.org") }}
-PASS: Check scheme + host (https://example.org) is external (is true), (got true)
-{{- else }}
-FAIL: Check scheme + host (https://example.org) is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "https://example.org/link") }}
-PASS: Check scheme + host + path (https://example.org/link) is external (is true), (got true)
-{{- else }}
-FAIL: Check scheme + host + path (https://example.org/link) is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "https://example.org/link#an-anchor") }}
-PASS: Check scheme + host + path + fragment (https://example.org/link#an-anchor) is external (is true), (got true)
-{{- else }}
-FAIL: Check scheme + host + path + fragment (https://example.org/link#an-anchor) is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "https://example.org/link?query") }}
-PASS: Check scheme + host + path + query (https://example.org/link?query) is external (is true), (got true)
-{{- else }}
-FAIL: Check scheme + host + path + query (https://example.org/link?query) is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "mailto:user@example.net") }}
-PASS: Check scheme + email address (mailto:user@example.net) is external (is true), (got true)
-{{- else }}
-FAIL: Check scheme + email address (mailto:user@example.net) is external (is true), (got false)
-{{- end -}}
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" "tel:+15555555555") }}
-PASS: Check scheme + (fake) telephone number (tel:+15555555555) is external (is true), (got true)
-{{- else }}
-PASS: Check scheme + (fake) telephone number (tel:+15555555555) is external (is true), (got false)
+{{- $errorOnFail := (.Get 0) -}}
+{{- $pass := true -}}
+{{- $skip := false -}}
+{{- $noLog := false -}}
+{{- $noPrint := false -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "" "expected" false "checkMessage" "empty string is not external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) -}}
+{{- $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" " " "expected" false "checkMessage" "space is not external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "a-string" "expected" false "checkMessage" "basic string is not external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "a-string.tld" "expected" false "checkMessage" "basic string with a dot is not external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "//a-string" "expected" true "checkMessage" "a string beginning with two slashes is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "//a-string.tld" "expected" "true" "checkMessage" "a string with dot and beginning with two slashes is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "user@example.net" "expected" false "checkMessage" "a bare email address is not external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "mailto:user@example.net" "expected" true "checkMessage" "an mailto scheme + email address link is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "mailto:" "expected" true "checkMessage" "a bare email scheme (\"mailto:\") is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint "ignoreResult" true) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https:" "expected" true "checkMessage" "a bare http scheme (\"http:\") is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint "ignoreResult" true) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https://" "expected" true "checkMessage" "a https scheme with no target (\"https:\") is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint "ignoreResult" true) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https://example.org" "expected" true "checkMessage" "scheme + host is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https://example.org/link" "expected" true "checkMessage" "scheme + host + path is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https://example.org/link?a-query" "expected" true "checkMessage" "scheme + host + path + query is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "https://example.org/link#an-anchor?a-query" "expected" true "checkMessage" "scheme + host + path + fragment + query is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-external-destination.html" (dict "matchType" "eq" "Destination" "tel:+15555555555" "expected" true "checkMessage" "tel scheme + (fake) telephone number is external" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = and $pass $result.pass -}}
+
+{{- if and (not $pass) (eq $errorOnFail true) -}}
+	{{- errorf "FAIL: UNIT TEST SUMMARY: Check 'is-external-destination'" -}}
 {{- end -}}

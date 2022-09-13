@@ -9,7 +9,7 @@
 {{- $finalResource := $page.Scratch.Get "nil-value" -}}
 {{- $isPage := false -}}
 
-{{- if partial "helpers/functions/is-external-destination.html" (dict "Destination" $destination) -}}
+{{- if (partial "helpers/functions/is-external-destination.html" (dict "Destination" $destination)).isExternal -}}
 	{{- if not $getRemote -}}
 		{{- /* If the link is external and we are not pulling remote resources, just use the link verbatim */}}
 		{{- $finalDestination = $destination -}}
@@ -43,7 +43,7 @@
 	{{- if $pageResource -}}
 		{{- $finalResource = $pageResource -}}
 		{{- $isPage = true -}}
-		{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" $destination) -}}
+		{{- $fragment := (partial "helpers/functions/get-fragment.html" (dict "destination" $destination)).fragment -}}
 		{{- if $fragment -}}
 			{{- $finalDestination = printf "%s#%s" $pageResource.RelPermalink $fragment -}}
 		{{- else -}}
