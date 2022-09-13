@@ -8,7 +8,7 @@ description = "Test Hugo version check function"
 +++
 
 ```shell-session
-{{< unit-tests/check-hugo-version >}}
+{{< unit-tests/check-hugo-version true >}}
 ```
 
 [Unit test results as a text file](plaintext/unit-tests-check-version.txt)

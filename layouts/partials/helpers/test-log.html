@@ -1,0 +1,68 @@
+{{- $ctx := . -}}
+{{- $matchType := .matchType -}}
+{{- $actual := .actual -}}
+{{- $expected := .expected -}}
+{{- $checkMessage := .checkMessage -}}
+{{- $matchPass := .matchPass -}} {{- /* actual matches expected is PASS */ -}}
+{{- $skip := .skip -}}
+{{- $noLog := .noLog -}}
+{{- $noPrint := .noPrint -}}
+{{- $scratch := newScratch -}}
+{{- $pass := $scratch.Get "nil-value" -}}
+{{- $passString := "SKIP" -}}
+{{- $match := false -}}
+{{- $output := "" -}}
+
+{{- if ne $skip true -}}
+	{{- if eq $matchType "eq" -}}
+		{{- if eq $actual $expected -}}
+			{{- $match = true -}}
+		{{- end -}}
+	{{- end -}}
+	{{- if eq $matchType "regexMatch" -}}
+		{{- if findRE $expected $actual -}}
+			{{- $match = true -}}
+		{{- end -}}
+	{{- end -}}
+	{{- if eq $matchType "sliceGt0" -}}
+		{{- $match = false -}}
+		{{- range $actual -}}
+			{{- if gt (int .) 0 -}}
+				{{- $match = true -}}
+			{{- end -}}
+		{{- end -}}
+	{{- end -}}
+	{{- if eq $matchType "sliceEq" -}}
+		{{- $match = eq (apply $actual "string" ".") (apply $expected "string" ".") -}}
+	{{- end -}}
+	{{- if eq $match true -}}
+		{{- if eq $matchPass true -}}
+			{{- $pass = true -}}
+			{{- $passString = "PASS" -}}
+		{{- else -}}
+			{{- $pass = false -}}
+			{{- $passString = "FAIL" -}}
+		{{- end -}}
+	{{- else -}}
+		{{- if eq $matchPass true -}}
+			{{- $pass = false -}}
+			{{- $passString = "FAIL" -}}
+		{{- else -}}
+			{{- $pass = true -}}
+			{{- $passString = "PASS" -}}
+		{{- end -}}
+	{{- end -}}
+{{- end -}}
+{{- if reflect.IsSlice $actual -}}
+	{{- $actual = apply $actual "string" "." -}}
+{{- end -}}
+{{- if reflect.IsSlice $expected -}}
+	{{- $expected = apply $expected "string" "." -}}
+{{- end -}}
+{{- if ne $noLog true -}}
+	{{- warnf "%s: Check %s (got %s, expected %s)" $passString $checkMessage $actual $expected -}}
+{{- end -}}
+{{- if ne $noPrint true -}}
+	{{- $output = (printf "%s: Check %s (got %s, expected %s)" $passString $checkMessage $actual $expected) -}}
+{{- end -}}
+{{- return (dict "pass" $pass "output" $output) -}}
