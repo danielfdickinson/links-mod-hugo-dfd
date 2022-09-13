@@ -1,0 +1,24 @@
+{{- $ctx := . -}}
+{{- $destination := .destination -}}
+{{- $expected := .expected -}}
+{{- $matchType := .matchType -}}
+{{- $checkMessage := .checkMessage -}}
+{{- $skip := .skip -}}
+{{- $noLog := .noLog -}}
+{{- $noPrint := .noPrint -}}
+{{- $pass := true -}}
+
+{{- $fragmentMap := partial "helpers/functions/get-fragment.html" (dict "destination" $destination "skip" $skip) -}}
+{{- $fragment := $fragmentMap.fragment -}}
+{{- $fragmentResult := $fragmentMap.result -}}
+{{- if not $fragmentResult.pass -}}
+	{{- $skip = true -}}
+	{{- $pass = false -}}
+	{{- if ne $noPrint true -}}
+		{{- printf "%s" $fragmentResult.output -}}
+	{{- end -}}
+{{- end -}}
+
+{{- $result := partial "helpers/test-log.html" (dict "matchType" $matchType "actual" $fragment "expected" $expected "checkMessage" (printf "%s (destination: '%s')" $checkMessage $destination) "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) -}}
+
+{{- return $result -}}

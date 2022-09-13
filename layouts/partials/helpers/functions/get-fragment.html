@@ -1,20 +1,20 @@
 {{- $ctx := . -}}
 {{- $destination := .destination -}}
+{{- $skip := .skip -}}
+{{- $log := .log -}}
+{{- $noPrint := .noPrint -}}
 {{- $path := "" -}}
 {{- $fragment := "" -}}
 {{- $external := false -}}}
 {{- $inUrl := urls.Parse $destination -}}
+{{- $result := partial "helpers/test-log.html" (dict "matchType" "regexMatch" "actual" $inUrl "expected" "(^$|(\\s|\\S)+)" "checkMessage" (printf "parse link destination for '%s'" $destination) "matchPass" true "skip" $skip "noLog" (not $log) "noPrint" ($noPrint)) -}}
 {{- with $inUrl -}}
-	{{- /* We treat absolute URLs (that include http/https/mailto/etc and/or host) as external */ -}}
-	{{- if or .Host .Scheme -}}
-		{{- $external = true -}}
-	{{- else if .Fragment -}}
+	{{- if .Fragment -}}
 		{{- $fragment = .Fragment -}}
 	{{- end -}}
 {{- else -}}
-	{{- warnf "FAIL: Unable to parse link destination '%s'" $destination -}}
 	{{- $tmpScratch := newScratch -}}
 	{{- $fragment = $tmpScratch.Get "nil-value" -}}
 {{- end -}}
-{{- return $fragment -}}
+{{- return (dict "fragment" $fragment "result" $result) -}}
 {{- /* Remove trailing newlines */ -}}

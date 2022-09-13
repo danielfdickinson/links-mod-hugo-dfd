@@ -1,50 +1,83 @@
 {{- $ctx := . -}}
+{{- $errorOnFail := (.Get 0) -}}
 {{- $pass := true -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "") -}}
-{{- if eq $fragment "" -}}
-PASS: Check no URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
-{{- else -}}
-FAIL: Check no URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "not a/ proper \\ URL?blah&tet?23/test") -}}
-{{- if eq $fragment "" }}
-PASS: Check invalid URL returns empty string ("") fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check invalid URL returns empty string ("") fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "https://example.com/post/") -}}
-{{- if eq $fragment "" }}
-PASS: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "https://example.com/post#test-frag") -}}
-{{- if eq $fragment "" }}
-PASS: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check valid external URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "/post/") -}}
-{{- if eq $fragment "" }}
-PASS: Check valid internal URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check valid internal URL with no fragment returns empty string ("") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "/post#note-1") -}}
-{{- if eq $fragment "note-1" }}
-PASS: Check valid internal URL with fragment returns fragment ("note-1") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check valid internal URL with fragment returns fragment ("note-1") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "#note-1") -}}
-{{- if eq $fragment "note-1" }}
-PASS: Check valid fragment only (no URL) returns fragment ("note-1") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check valid fragment only (no URL) returns fragment ("note-1") as fragment (got "{{ $fragment }}')
-{{- end -}}
-{{- $fragment := partial "helpers/functions/get-fragment.html" (dict "destination" "#") -}}
-{{- if eq $fragment "" }}
-PASS: Check hash only (#) (no URL or fragment) returns empty string ("") as fragment (got "{{ $fragment }}")
-{{- else }}
-FAIL: Check hash only (#) (no URL or fragment) returns empty string ("") as fragment (got "{{ $fragment }}")
+{{- $skip := false -}}
+{{- $noLog := false -}}
+{{- $noPrint := false -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "" "expected" "" "checkMessage" "no URL with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $skip "noLog" $noLog "noPrint" $noPrint) -}}
+
+{{- $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "not a/ proper \\ URL?blah&tet?23/test" "expected" "" "checkMessage" "invalid URL returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "//a-string" "expected" "" "checkMessage" "URL beginning with '//' and no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "//a-string#test-frag" "expected" "test-frag" "checkMessage" "URL beginning with '//' and fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "https://example.com/post" "expected" "" "checkMessage" "valid external URL with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "https://example.com/post/" "expected" "" "checkMessage" "valid external URL with trailing slash ('/') and no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "https://example.com/post#test-frag" "expected" "test-frag" "checkMessage" "valid external URL with fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "https://example.com/post/#test-frag" "expected" "test-frag" "checkMessage" "valid external URL with trailing slash ('/') and fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "/post" "expected" "" "checkMessage" "valid absolute internal URL with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "/post/" "expected" "" "checkMessage" "valid absolute internal URL with trailing slash ('/') with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "/post#test-frag" "expected" "test-frag" "checkMessage" "valid absolute internal URL with fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "/post/#test-frag" "expected" "test-frag" "checkMessage" "valid absolute internal URL with trailing slash ('/') and fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "post" "expected" "" "checkMessage" "valid page-relative internal URL with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "post/" "expected" "" "checkMessage" "valid page-relative internal URL with trailing slash ('/') with no fragment returns empty string (\"\") as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "post#test-frag" "expected" "test-frag" "checkMessage" "valid page-relative internal URL with fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "post/#test-frag" "expected" "test-frag" "checkMessage" "valid page-relative internal URL with trailing slash ('/') and fragment returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "#test-frag" "expected" "test-frag" "checkMessage" "fragment only returns fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- $result := partial "helpers/test-wrapper-fragment.html" (dict "matchType" "eq" "destination" "#" "expected" "" "checkMessage" "hash only (#) return empty string as fragment" "matchPass" true "skip" $result.skip "noLog" $noLog "noPrint" $noPrint) }}
+{{ $result.output -}}
+{{- $pass = $result.pass -}}
+
+{{- if and (not $pass) (eq $errorOnFail true) -}}
+	{{- errorf "FAIL: UNIT TEST SUMMARY: Check 'get-fragment'" -}}
 {{- end -}}

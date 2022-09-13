@@ -7,7 +7,7 @@ tags = ["unit-tests"]
 +++
 
 ```shell-session
-{{< unit-tests/get-fragment >}}
+{{< unit-tests/get-fragment true >}}
 ```
 
 [Unit test results as a text file](plaintext/unit-tests-get-fragment.txt)
