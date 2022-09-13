@@ -3,21 +3,16 @@
 {{- $paramVer := slice -}}
 {{- $skip := false -}}
 {{- $pass := true -}}
+
 {{- $result := partial "helpers/test-log.html" (dict "matchType" "eq" "actual" (string (isset .Page.Site.Params "hugoversion")) "expected" "true" "checkMessage" "site.Params.hugoversion exists" "matchPass" true "skip" $skip) -}}
 {{- $result.output -}}
-{{- if ne $result.pass true -}}
-	{{- $skip = true -}}
-	{{- $pass = false -}}
-{{- end -}}
-{{- if ne $skip true -}}
-	{{- $result = partial "helpers/test-log.html" (dict "matchType" "regexMatch" "actual" (string (site.Params.hugoVersion)) "expected" "[0-9]+\\.[0-9]+\\.[0-9]+" "checkMessage" "site.Params.hugoversion is of the form 0.0.0" "matchPass" true "skip" $skip) }}
+{{- $pass = and $result.pass (not $result.skip) -}}
+
+{{- $result = partial "helpers/test-log.html" (dict "matchType" "regexMatch" "actual" (string (site.Params.hugoVersion)) "expected" "[0-9]+\\.[0-9]+\\.[0-9]+" "checkMessage" "site.Params.hugoversion is of the form 0.0.0" "matchPass" true "skip" $result.skip) }}
 {{ $result.output -}}
-	{{- if ne $result.pass true -}}
-		{{- $skip = true -}}
-		{{- $pass = false -}}
-	{{- end -}}
-{{- end -}}
-{{- if ne $skip true -}}
+{{- $pass = and $result.pass (not $result.skip) -}}
+
+{{- if ne $result.skip true -}}
 	{{- $paramVer = split (index .Page.Site.Params "hugoversion") "." -}}
 {{- else -}}
 	{{- $paramVer = (slice "0" "0" "0") -}}
@@ -25,18 +20,18 @@
 {{- $paramMajor := int (index $paramVer 0) -}}
 {{- $paramMinor := int (index $paramVer 1) -}}
 {{- $paramPatch := int (index $paramVer 2) }}
-{{- $result = partial "helpers/test-log.html" (dict "matchType" "sliceGt0" "actual" (slice $paramMajor $paramMinor $paramPatch) "expected" (slice "≥ 0" "≥ 0" "≥ 0") "checkMessage" "site.Params.hugoversion exists with (major, minor, patch)" "matchPass" true "skip" $skip) }}
+{{- $result = partial "helpers/test-log.html" (dict "matchType" "sliceGt0" "actual" (slice $paramMajor $paramMinor $paramPatch) "expected" (slice "≥ 0" "≥ 0" "≥ 0") "checkMessage" "site.Params.hugoversion exists with (major, minor, patch)" "matchPass" true "skip" $result.skip) }}
 {{ $result.output -}}
-{{- $pass = and $result.pass (not $skip) -}}
-{{- $result = partial "helpers/test-log.html" (dict "matchType" "sliceGt0" "actual" (slice $paramMajor $paramMinor $paramPatch) "expected" (slice "≥ 0" "> 0" "≥ 0") "checkMessage" "site.Params.hugoversion > 0.0.0" "matchPass" true "skip" $skip) }}
+{{- $pass = and $result.pass (not $result.skip) -}}
+
+{{- $result = partial "helpers/test-log.html" (dict "matchType" "sliceGt0" "actual" (slice $paramMajor $paramMinor $paramPatch) "expected" (slice "≥ 0" "> 0" "≥ 0") "checkMessage" "site.Params.hugoversion > 0.0.0" "matchPass" true "skip" $result.skip) }}
 {{ $result.output -}}
-{{- $pass = and $result.pass (not $skip) -}}
+{{- $pass = and $result.pass (not $result.skip) -}}
+{{- $skip = $result.skip -}}
+
 {{- $result = partial "helpers/test-log.html" (dict "matchType" "sliceEq" "actual" (slice $paramMajor $paramMinor $paramPatch) "expected" (apply (split hugo.Version ".") "int" ".") "checkMessage" "site.Params.hugoversion = hugo.Version" "matchPass" true "skip" $skip) }}
 {{ $result.output -}}
-{{- if or $skip (not $result.pass) (not $pass) -}}
-	{{- $pass = false -}}
-	{{- $skip = true -}}
-{{- end -}}
+{{- $pass = and $result.pass (not $skip) -}}
 
 {{- $result = partial "helpers/test-log.html" (dict "matchType" "eq" "actual" (string (partial "helpers/functions/check-hugo-version.html" (dict "minMajor" $paramMajor "minMinor" $paramMinor "minPatch" (sub $paramPatch 1)))) "expected" "true" "checkMessage" (printf "hugo.Version %s ≥ %s.%s.%s minimum" hugo.Version (string $paramMajor) (string $paramMinor) (string (sub $paramPatch 1))) "matchPass" true "skip" $skip) }}
 {{ $result.output -}}
