@@ -12,6 +12,7 @@ replace <https://github.com/danielfdickinson/link-handling-mod-hugo-dfd>.
 [![pre-commit.ci
 status](https://results.pre-commit.ci/badge/github/danielfdickinson/links-mod-hugo-dfd/main.svg)](https://results.pre-commit.ci/latest/github/danielfdickinson/links-mod-hugo-dfd/main)
 [![build-and-deploy](https://github.com/danielfdickinson/links-mod-hugo-dfd/actions/workflows/build-and-deploy.yml/badge.svg)](https://github.com/danielfdickinson/links-mod-hugo-dfd/actions/workflows/build-and-deploy.yml)
+[![monthly-external-link-check](https://github.com/danielfdickinson/links-mod-hugo-dfd/actions/workflows/monthly-external-link-check.yml/badge.svg)](https://github.com/danielfdickinson/links-mod-hugo-dfd/actions/workflows/monthly-external-link-check.yml)
 
 ### Demo and/or documentation site or page
 
