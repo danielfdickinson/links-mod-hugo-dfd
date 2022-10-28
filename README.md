@@ -4,6 +4,10 @@ Hugo link render-hook, partials, and shortcode for improved link handling,
 including GitHub compatibility (page-relative links). New code, intended to
 replace <https://github.com/danielfdickinson/link-handling-mod-hugo-dfd>.
 
+## ARCHIVED
+
+This module is no longer maintained (archived for historical purposes), and will not receive updates, even security updates.
+
 ## Metadata
 
 ### Status
